@@ -3,7 +3,7 @@ layout: default
 permalink: /blog/
 title: Blog
 nav: true
-nav_order: 1
+nav_order: 5
 pagination:
   enabled: true
   collection: posts
@@ -120,14 +120,28 @@ pagination:
     {% assign tags = post.tags | join: "" %}
     {% assign categories = post.categories | join: "" %}
 
-    <li>
+    <li class="post-card">
 
 {% if post.thumbnail %}
 
-<div class="row">
-          <div class="col-sm-9">
+      {% if post.redirect == blank %}
+        <a href="{{ post.url | relative_url }}">
+      {% elsif post.redirect contains '://' %}
+        <a href="{{ post.redirect }}" target="_blank">
+      {% else %}
+        <a href="{{ post.redirect | relative_url }}">
+      {% endif %}
+        <img class="post-card-img" src="{{ post.thumbnail | relative_url }}" alt="{{ post.title }}">
+      </a>
 {% endif %}
-        <h3>
+      <p class="post-meta">
+        {{ post.date | date: '%B %d, %Y' }} &nbsp; &middot; &nbsp;
+        {{ read_time }} min read
+        {% if post.external_source %}
+        &nbsp; &middot; &nbsp; {{ post.external_source }}
+        {% endif %}
+      </p>
+      <h3>
         {% if post.redirect == blank %}
           <a class="post-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         {% elsif post.redirect contains '://' %}
@@ -140,13 +154,6 @@ pagination:
         {% endif %}
       </h3>
       <p>{{ post.description }}</p>
-      <p class="post-meta">
-        {{ read_time }} min read &nbsp; &middot; &nbsp;
-        {{ post.date | date: '%B %d, %Y' }}
-        {% if post.external_source %}
-        &nbsp; &middot; &nbsp; {{ post.external_source }}
-        {% endif %}
-      </p>
       <p class="post-tags">
         <a href="{{ year | prepend: '/blog/' | relative_url }}">
           <i class="fa-solid fa-calendar fa-sm"></i> {{ year }} </a>
@@ -174,15 +181,6 @@ pagination:
           {% endif %}
     </p>
 
-{% if post.thumbnail %}
-
-</div>
-
-  <div class="col-sm-3">
-    <img class="card-img" src="{{ post.thumbnail | relative_url }}" style="object-fit: cover; height: 90%" alt="image">
-  </div>
-</div>
-{% endif %}
     </li>
 
     {% endfor %}

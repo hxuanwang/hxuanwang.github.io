@@ -1,0 +1,473 @@
+/*******************************************************************************
+ * Themes (local override — shadows the al_folio_core gem default)
+ *
+ * This file is intentionally self-contained: it uses NO Sass variables, so it
+ * compiles regardless of how the installed gem structures its own modules.
+ * Light mode uses the site's custom palette; dark mode replicates the gem's
+ * compiled default values. Starter-specific component rules (blog cards,
+ * navbar material, notes list, type discipline) are appended at the bottom.
+ ******************************************************************************/
+
+:root {
+  color-scheme: light;
+  --global-bg-color: #fdfdfb;
+  --global-code-bg-color: rgba(139, 26, 26, 0.05);
+  --global-text-color: #1a1a1a;
+  --global-text-color-light: #555555;
+  --global-theme-color: #8b1a1a;
+  --global-hover-color: #6b1414;
+  --global-hover-text-color: #ffffff;
+  --global-footer-bg-color: #1c1c1d;
+  --global-footer-text-color: #e8e8e8;
+  --global-footer-link-color: #ffffff;
+  --global-distill-app-color: #555555;
+  --global-divider-color: #e4e1d8;
+  --global-card-bg-color: #f5f3ec;
+  --global-highlight-color: #b71c1c;
+  --global-back-to-top-bg-color: rgba(0, 0, 0, 0.4);
+  --global-back-to-top-text-color: #ffffff;
+  --global-newsletter-bg-color: #f5f3ec;
+  --global-newsletter-text-color: #1a1a1a;
+
+  --global-tip-block: #42b983;
+  --global-tip-block-bg: #e2f5ec;
+  --global-tip-block-text: #215d42;
+  --global-tip-block-title: #359469;
+  --global-warning-block: #e7c000;
+  --global-warning-block-bg: #fff8d8;
+  --global-warning-block-text: #6b5900;
+  --global-warning-block-title: #b29400;
+  --global-danger-block: #c00;
+  --global-danger-block-bg: #ffe0e0;
+  --global-danger-block-text: #600;
+  --global-danger-block-title: #c00;
+
+  #light-toggle-system {
+    padding-left: 10px;
+    padding-top: 12px;
+    display: block;
+  }
+
+  #light-toggle-dark {
+    display: none;
+  }
+
+  #light-toggle-light {
+    display: none;
+  }
+
+  .only-light {
+    display: block;
+  }
+
+  .only-dark {
+    display: none;
+  }
+
+  #back-to-top {
+    color: var(--global-back-to-top-text-color);
+    background: var(--global-back-to-top-bg-color);
+    bottom: 30px;
+    right: 30px;
+    height: 40px;
+    width: 40px;
+    z-index: 10;
+  }
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --global-bg-color: #1c1c1d;
+  --global-code-bg-color: #2c3237;
+  --global-text-color: #e8e8e8;
+  --global-text-color-light: #828282;
+  --global-theme-color: #2698ba;
+  --global-hover-color: #2698ba;
+  --global-hover-text-color: #ffffff;
+  --global-footer-bg-color: #e8e8e8;
+  --global-footer-text-color: #1c1c1d;
+  --global-footer-link-color: #000000;
+  --global-distill-app-color: #e8e8e8;
+  --global-divider-color: #424246;
+  --global-card-bg-color: #212529;
+  --global-back-to-top-bg-color: rgba(255, 255, 255, 0.5);
+  --global-back-to-top-text-color: #000000;
+  --global-newsletter-bg-color: #e8e8e8;
+  --global-newsletter-text-color: #1c1c1d;
+
+  --global-tip-block: #42b983;
+  --global-tip-block-bg: #215d42;
+  --global-tip-block-text: #beffe2;
+  --global-tip-block-title: #e2f5ec;
+  --global-warning-block: #e7c000;
+  --global-warning-block-bg: #6b5900;
+  --global-warning-block-text: #fff2af;
+  --global-warning-block-title: #fff8d8;
+  --global-danger-block: #c00;
+  --global-danger-block-bg: #600;
+  --global-danger-block-text: #ffb9b9;
+  --global-danger-block-title: #ffe0e0;
+
+  .only-light {
+    display: none;
+  }
+
+  .only-dark {
+    display: block;
+  }
+}
+
+html[data-theme-setting="dark"] {
+  #light-toggle-system {
+    display: none;
+  }
+
+  #light-toggle-dark {
+    padding-left: 10px;
+    padding-top: 12px;
+    display: block;
+  }
+
+  #light-toggle-light {
+    display: none;
+  }
+
+  #back-to-top {
+    color: var(--global-back-to-top-text-color);
+    background: var(--global-back-to-top-bg-color);
+  }
+}
+
+html[data-theme-setting="light"] {
+  #light-toggle-system {
+    display: none;
+  }
+
+  #light-toggle-dark {
+    display: none;
+  }
+
+  #light-toggle-light {
+    padding-left: 10px;
+    padding-top: 12px;
+    display: block;
+  }
+}
+
+/*******************************************************************************
+ * Starter customizations
+ ******************************************************************************/
+
+// Capitalize the gem-owned "news" heading on the Home page to "News".
+h2 a[href$="/news/"] {
+  text-transform: capitalize;
+}
+
+// Translucent fixed navbar (navbar_fixed: true) — reads as a material over
+// scrolling content rather than an opaque bar. Overrides the gem's solid
+// `.navbar` background via higher specificity (ID selector).
+#navbar.navbar {
+  background-color: color-mix(in srgb, var(--global-bg-color) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  opacity: 1;
+}
+
+// Blog post cards: full-width thumbnail, then date/meta, then title.
+// Instant, continuous pointer feedback (no artificial delay).
+.post-list > li.post-card {
+  transition: transform 150ms ease-out;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.99);
+    transition-duration: 60ms;
+  }
+}
+
+.post-card-img {
+  display: block;
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 576px) {
+  .post-card-img {
+    height: 220px;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// jihaoliu.org-inspired design system
+// ----------------------------------------------------------------------------
+
+:root {
+  --font-serif: "Crimson Pro", "Crimson Text", "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+// Serif reading experience on an 18px base; meta text stays sans.
+body {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+}
+
+body,
+p {
+  line-height: 1.65;
+}
+
+.post-meta,
+.post-tags,
+.entry-links,
+.course-meta,
+.contact-block,
+#navbar .navbar-nav {
+  font-family: var(--font-sans);
+}
+
+// Display type: tight tracking only at h1 size.
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+// Small-caps sans subtitle under the site title (about page).
+.post-header .desc {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--global-text-color-light);
+}
+
+// Section headings with a quiet rule underneath.
+.post h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--global-divider-color);
+}
+
+// Content links: no underline, a faint red baseline that solidifies on hover.
+article p a:not(.btn),
+article li a:not(.btn),
+.publications .author a,
+.contact-block a,
+.entry-links a {
+  border-bottom: 1px solid color-mix(in srgb, var(--global-theme-color) 25%, transparent);
+  text-decoration: none;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease;
+
+  &:hover {
+    border-bottom-color: var(--global-hover-color);
+    text-decoration: none;
+  }
+}
+
+// Nav links: muted with a red baseline on hover and for the active page.
+#navbar .nav-link {
+  border-bottom: 1px solid transparent;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease;
+
+  &:hover {
+    border-bottom-color: var(--global-theme-color);
+  }
+}
+
+#navbar .nav-item.active > .nav-link {
+  border-bottom-color: var(--global-theme-color);
+}
+
+// Year / institution group headings (publications, teaching): small,
+// uppercase, sans — not section rules.
+.publications h2.bibliography,
+.post h3.group-heading {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--global-text-color-light);
+  text-align: left;
+  border-top: none;
+  border-bottom: none;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 2.5rem;
+}
+
+// Publications: plain numbered list, no badge/thumbnail column.
+.publications ol.bibliography {
+  list-style: decimal;
+  padding-left: 1.75rem;
+  border-top: none;
+  padding-top: 0;
+
+  > li::marker {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--global-text-color-light);
+  }
+
+  > li > .row {
+    padding-left: 1rem;
+    border-left: 2px solid transparent;
+    transition: border-color 150ms ease;
+
+    &:hover {
+      border-left-color: var(--global-divider-color);
+    }
+
+    > .abbr {
+      display: none;
+    }
+
+    > .col-sm-8 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+
+  .title {
+    font-weight: 600;
+  }
+
+  .author {
+    font-size: 0.95rem;
+  }
+
+  .periodical {
+    color: var(--global-text-color-light);
+    font-size: 0.92rem;
+  }
+}
+
+// Notes entries (and any jihaoliu-style entry list).
+.entry {
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid transparent;
+  transition: border-color 150ms ease;
+
+  &:hover {
+    border-left-color: var(--global-divider-color);
+  }
+
+  > p {
+    font-size: 0.95em;
+  }
+}
+
+.entry-title {
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+
+.entry-authors {
+  font-size: 0.95rem;
+  margin-bottom: 0.15rem;
+}
+
+.entry-venue {
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--global-text-color-light);
+  margin-bottom: 0.15rem;
+}
+
+.entry-links {
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+
+  a {
+    margin-right: 0.75rem;
+  }
+}
+
+// Teaching: simple separated list grouped by institution.
+.teaching-list {
+  list-style: none;
+  padding-left: 0;
+
+  li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--global-divider-color);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.course-name {
+  font-weight: 600;
+}
+
+.course-meta {
+  font-size: 0.9rem;
+  color: var(--global-text-color-light);
+  margin-top: 0.15rem;
+}
+
+// Home: italic research-interests line and the contact card.
+.research-interests {
+  font-style: italic;
+  color: var(--global-text-color-light);
+}
+
+.contact-block {
+  background: var(--global-card-bg-color);
+  padding: 1.5rem;
+  border-left: 3px solid var(--global-theme-color);
+  margin-top: 2.5rem;
+  font-size: 0.95rem;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 5em 1fr;
+  row-gap: 0.4rem;
+  column-gap: 0.5em;
+  align-items: baseline;
+}
+
+.contact-label {
+  font-weight: 500;
+  color: var(--global-text-color-light);
+}
+
+// Accessibility fallbacks: one consolidated block covering every
+// transition/animation introduced above.
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .post-list > li.post-card:hover,
+  .post-list > li.post-card:active {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  #navbar.navbar {
+    background-color: var(--global-bg-color);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
